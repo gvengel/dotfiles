@@ -13,7 +13,6 @@ compinit
 # Custom prompt
 setopt prompt_subst
 PROMPT='%F{102}%15<..<%~%<<%f %F{$(($??124:31))}%#%f '
-RPROMPT='HI JIM! $?'
 
 # Color lists
 export LS_OPTIONS='--color=auto'
@@ -40,6 +39,9 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 # brew install zsh-autosuggestions
 share='/usr/local/share'
 test -e $share/zsh-autosuggestions/zsh-autosuggestions.zsh && source $share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# Hide git for dotfiles
+alias git-dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME'
 
 # Setup our SSH agent
 connect_ssh_agent() {
