@@ -40,7 +40,7 @@ if [ "$TERM_PROGRAM" == "iTerm.app" ]; then
     test -e ${HOME}/.iterm2_shell_integration.bash && source ${HOME}/.iterm2_shell_integration.bash
 fi
 
-# Setup our SSH agent
+# Setup our SSH agent - See https://github.com/gvengel/ssh-askpass
 connect_ssh_agent() {
     export SSH_AUTH_SOCK=$(ls /private/tmp/com.apple.launchd.*/Listeners)
     ssh-add -l > /dev/null 2>&1

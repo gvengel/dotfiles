@@ -43,7 +43,7 @@ test -e $share/zsh-autosuggestions/zsh-autosuggestions.zsh && source $share/zsh-
 # Hide git for dotfiles
 alias git-dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME'
 
-# Setup our SSH agent
+# Setup our SSH agent - See https://github.com/gvengel/ssh-askpass
 connect_ssh_agent() {
     export SSH_AUTH_SOCK=$(ls /private/tmp/com.apple.launchd.*/Listeners)
     ssh-add -l > /dev/null 2>&1
