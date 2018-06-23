@@ -32,6 +32,27 @@ export desktop="${HOME}/Desktop"
 export downloads="${HOME}/Downloads"
 export main="${HOME}/dev/itg/main"
 export puppet="${main}/puppet"
+export salt="${main}/salt"
+
+# Helpers
+proxy() {
+    local scheme
+    local name
+    for scheme in 'http' 'https' 'ftp' 'all'; do 
+        if [ "$1" == 'off' ]; then
+            name="${scheme}_proxy"
+            export ${scheme}_proxy_off="${(P)${name}}"
+            unset ${scheme}_proxy
+        elif [ "$1" == 'on' ]; then
+            name="${scheme}_proxy_off"
+            export ${scheme}_proxy="${(P)${name}}"
+            unset ${scheme}_proxy_off
+        else
+            export ${scheme}_proxy="$1"
+            unset ${scheme}_proxy_off
+        fi
+    done
+}
 
 # iTerm magic
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
