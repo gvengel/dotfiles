@@ -54,6 +54,31 @@ proxy() {
     done
 }
 
+enable_mosh() {
+    local here=$(pwd)
+    local fw='/usr/libexec/ApplicationFirewall/socketfilterfw'
+    local mosh="$(which mosh-server)"
+    local target=$(basename $mosh)
+
+    cd $(dirname $mosh)
+    # Iterate down a (possible) chain of symlinks
+    while [ -L "$target" ]; do
+        target=$(readlink $target)
+        cd $(dirname $target)
+        target=$(basename $target)
+    done
+
+    mosh=$(pwd -P)/$target
+
+    if ! "$fw" --listapps | grep "$mosh" > /dev/null; then
+        sudo "$fw" --setglobalstate off
+        sudo "$fw" --add "$mosh"
+        sudo "$fw" --unblockapp "$mosh"
+        sudo "$fw" --setglobalstate on
+    fi
+    cd "$here"
+}
+
 # iTerm magic
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
