@@ -38,7 +38,7 @@ export salt="${main}/salt"
 proxy() {
     local scheme
     local name
-    for scheme in 'http' 'https' 'ftp'; do 
+    for scheme in 'all' 'http' 'https' 'ftp'; do 
         if [ "$1" == 'off' ]; then
             name="${scheme}_proxy"
             export ${scheme}_proxy_off="${(P)${name}}"
