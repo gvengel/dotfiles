@@ -66,16 +66,18 @@ alias git-dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOM
 
 # Setup our SSH agent - See https://github.com/gvengel/ssh-askpass
 connect_ssh_agent() {
-    export SSH_AUTH_SOCK=$(ls /private/tmp/com.apple.launchd.*/Listeners)
-    ssh-add -l > /dev/null 2>&1
-    if [ "$?" != "0" ]; then
-        launchctl setenv SSH_ASKPASS /usr/local/bin/ssh-askpass DISPLAY :0 && launchctl stop com.openssh.ssh-agent
-        ssh-add -c -t 12h
+    auth_link="$HOME/.ssh/ssh-auth-sock"
+    export SSH_AUTH_SOCK="$auth_link"
+    if ! ssh-add -l > /dev/null 2>&1; then
+        echo "start new agent"
+        killall -q ssh-agent
+        eval `SSH_ASKPASS=/usr/local/bin/ssh-askpass DISPLAY=:0 ssh-agent -s -t 12h`
+        ln -sf "$SSH_AUTH_SOCK" "$auth_link"
+        export SSH_AUTH_SOCK="$auth_link"
+        ssh-add -c ~/.ssh/id_ed25519
     fi
 }
-if [ -f ~/.ssh/id_rsa -o -f ~/.ssh/id_ed25519 ]; then
-    connect_ssh_agent
-fi
+[ -f ~/.ssh/id_ed25519 ] && connect_ssh_agent
 
 # Auto reconnect tmux over SSH
 if [ "$SSH_CONNECTION" -a -z "$TMUX" ]; then
