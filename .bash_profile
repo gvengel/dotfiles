@@ -70,8 +70,6 @@ shopt -s checkwinsize
 PROMPT_DIRTRIM=2
 # Do history expansion with a trailing space
 bind Space:magic-space
-# Turn on glob glob
-shopt -s globstar
 
 # Display matches for ambiguous patterns at first tab press
 bind "set show-all-if-ambiguous on"
@@ -80,10 +78,6 @@ bind "set mark-symlinked-directories on"
 # Colorize preview
 bind "set colored-completion-prefix on"
 bind "set colored-stats on"
-
-# Setup menu completion 
-bind "TAB: menu-complete"
-bind '"\e[Z": menu-complete-backward'
 
 # Append to history
 shopt -s histappend
