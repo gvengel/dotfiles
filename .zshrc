@@ -84,3 +84,4 @@ if [ "$SSH_CONNECTION" -a -z "$TMUX" ]; then
     tmux attach -d
 fi
 
+test -e ~/.zshrc.local && source ~/.zshrc.local
