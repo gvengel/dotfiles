@@ -38,7 +38,7 @@ export salt="${main}/salt"
 proxy() {
     local scheme
     local name
-    for scheme in 'http' 'https' 'ftp' 'all'; do 
+    for scheme in 'all' 'http' 'https' 'ftp'; do 
         if [ "$1" == 'off' ]; then
             name="${scheme}_proxy"
             export ${scheme}_proxy_off="${(P)${name}}"
@@ -48,18 +48,44 @@ proxy() {
             export ${scheme}_proxy="${(P)${name}}"
             unset ${scheme}_proxy_off
         else
-            export ${scheme}_proxy="$1"
+            export ${scheme}_proxy="${1:=http://proxy:3128}"
             unset ${scheme}_proxy_off
         fi
     done
+}
+
+enable_mosh() {
+    local here=$(pwd)
+    local fw='/usr/libexec/ApplicationFirewall/socketfilterfw'
+    local mosh="$(which mosh-server)"
+    local target=$(basename $mosh)
+
+    cd $(dirname $mosh)
+    # Iterate down a (possible) chain of symlinks
+    while [ -L "$target" ]; do
+        target=$(readlink $target)
+        cd $(dirname $target)
+        target=$(basename $target)
+    done
+
+    mosh=$(pwd -P)/$target
+
+    if ! "$fw" --listapps | grep "$mosh" > /dev/null; then
+        sudo "$fw" --setglobalstate off
+        sudo "$fw" --add "$mosh"
+        sudo "$fw" --unblockapp "$mosh"
+        sudo "$fw" --setglobalstate on
+    fi
+    cd "$here"
 }
 
 # iTerm magic
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # brew install zsh-autosuggestions
-share='/usr/local/share'
-test -e $share/zsh-autosuggestions/zsh-autosuggestions.zsh && source $share/zsh-autosuggestions/zsh-autosuggestions.zsh
+share='/usr/local'
+test -e $share/share/zsh-autosuggestions/zsh-autosuggestions.zsh && source $share/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+test -e $share/opt/gitstatus/gitstatus.prompt.zsh && source $share/opt/gitstatus/gitstatus.prompt.zsh
 
 # Hide git for dotfiles
 alias git-dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME'
@@ -79,9 +105,18 @@ connect_ssh_agent() {
 }
 [ -f ~/.ssh/id_ed25519 ] && connect_ssh_agent
 
+# Setup our GPG Agent
+connect_gpg_agent() {
+    export GPG_TTY="$(tty)"
+    export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+    gpgconf --launch gpg-agent
+    gpg-connect-agent updatestartuptty /bye > /dev/null
+}
+
 # Auto reconnect tmux over SSH
 if [ "$SSH_CONNECTION" -a -z "$TMUX" ]; then
     tmux attach -d
 fi
 
 test -e ~/.zshrc.local && source ~/.zshrc.local
+
