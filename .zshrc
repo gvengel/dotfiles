@@ -83,9 +83,9 @@ enable_mosh() {
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # brew install zsh-autosuggestions
-share='/usr/local'
-test -e $share/share/zsh-autosuggestions/zsh-autosuggestions.zsh && source $share/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-test -e $share/opt/gitstatus/gitstatus.prompt.zsh && source $share/opt/gitstatus/gitstatus.prompt.zsh
+test -e $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh && source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# brew install zsh-git-prompt
+test -e $HOMEBREW_PREFIX/opt/gitstatus/gitstatus.prompt.zsh && source $HOMEBREW_PREFIX/opt/gitstatus/gitstatus.prompt.zsh
 
 # Hide git for dotfiles
 alias git-dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME'
@@ -106,6 +106,8 @@ connect_ssh_agent() {
 [ -f ~/.ssh/id_ed25519 ] && connect_ssh_agent
 
 # Setup our GPG Agent
+# brew install gnupg
+# brew install pinentry-mac
 connect_gpg_agent() {
     export GPG_TTY="$(tty)"
     export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
