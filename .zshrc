@@ -34,6 +34,9 @@ export main="${HOME}/dev/itg/main"
 export puppet="${main}/puppet"
 export salt="${main}/salt"
 
+# Put local tools in path (pipx, etc)
+export PATH="${PATH}:${HOME}/.local/bin"
+
 # Helpers
 proxy() {
     local scheme
