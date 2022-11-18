@@ -84,7 +84,7 @@ enable_mosh() {
 # iTerm magic
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
-# brew install zsh-autosuggestions
+# brew install zsh-autosuggestions romkatv/gitstatus/gitstatus
 share='/usr/local'
 test -e $share/share/zsh-autosuggestions/zsh-autosuggestions.zsh && source $share/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 test -e $share/opt/gitstatus/gitstatus.prompt.zsh && source $share/opt/gitstatus/gitstatus.prompt.zsh
