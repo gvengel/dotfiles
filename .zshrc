@@ -70,12 +70,11 @@ enable_mosh() {
 
     mosh=$(pwd -P)/$target
 
-    if ! "$fw" --listapps | grep "$mosh" > /dev/null; then
-        sudo "$fw" --setglobalstate off
-        sudo "$fw" --add "$mosh"
-        sudo "$fw" --unblockapp "$mosh"
-        sudo "$fw" --setglobalstate on
-    fi
+    sudo "$fw" --setglobalstate off
+    sudo "$fw" --add "$mosh"
+    sudo "$fw" --unblockapp "$mosh"
+    sudo "$fw" --setglobalstate on
+
     cd "$here"
 }
 
