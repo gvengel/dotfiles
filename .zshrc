@@ -34,6 +34,9 @@ export main="${HOME}/dev/itg/main"
 export puppet="${main}/puppet"
 export salt="${main}/salt"
 
+# Put local tools in path (pipx, etc)
+export PATH="${PATH}:${HOME}/.local/bin"
+
 # Helpers
 proxy() {
     local scheme
@@ -70,22 +73,21 @@ enable_mosh() {
 
     mosh=$(pwd -P)/$target
 
-    if ! "$fw" --listapps | grep "$mosh" > /dev/null; then
-        sudo "$fw" --setglobalstate off
-        sudo "$fw" --add "$mosh"
-        sudo "$fw" --unblockapp "$mosh"
-        sudo "$fw" --setglobalstate on
-    fi
+    sudo "$fw" --setglobalstate off
+    sudo "$fw" --add "$mosh"
+    sudo "$fw" --unblockapp "$mosh"
+    sudo "$fw" --setglobalstate on
+
     cd "$here"
 }
 
 # iTerm magic
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
-# brew install zsh-autosuggestions
-test -e $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh && source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-# brew install zsh-git-prompt
-test -e $HOMEBREW_PREFIX/opt/gitstatus/gitstatus.prompt.zsh && source $HOMEBREW_PREFIX/opt/gitstatus/gitstatus.prompt.zsh
+# brew install zsh-autosuggestions romkatv/gitstatus/gitstatus
+share='/usr/local'
+test -e $share/share/zsh-autosuggestions/zsh-autosuggestions.zsh && source $share/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+test -e $share/opt/gitstatus/gitstatus.prompt.zsh && source $share/opt/gitstatus/gitstatus.prompt.zsh
 
 # Hide git for dotfiles
 alias git-dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME'
