@@ -85,9 +85,8 @@ enable_mosh() {
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # brew install zsh-autosuggestions romkatv/gitstatus/gitstatus
-share='/usr/local'
-test -e $share/share/zsh-autosuggestions/zsh-autosuggestions.zsh && source $share/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-test -e $share/opt/gitstatus/gitstatus.prompt.zsh && source $share/opt/gitstatus/gitstatus.prompt.zsh
+test -e $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh && source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+test -e $HOMEBREW_PREFIX/opt/gitstatus/gitstatus.prompt.zsh && source $HOMEBREW_PREFIX/opt/gitstatus/gitstatus.prompt.zsh
 
 # Hide git for dotfiles
 alias git-dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME'
