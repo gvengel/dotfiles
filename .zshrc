@@ -30,9 +30,6 @@ alias egrep='egrep --color=auto'
 setopt cdable_vars
 export desktop="${HOME}/Desktop"
 export downloads="${HOME}/Downloads"
-export main="${HOME}/dev/itg/main"
-export puppet="${main}/puppet"
-export salt="${main}/salt"
 
 # Put local tools in path (pipx, etc)
 export PATH="${PATH}:${HOME}/.local/bin"
