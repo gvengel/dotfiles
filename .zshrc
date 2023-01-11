@@ -88,35 +88,49 @@ test -e $HOMEBREW_PREFIX/opt/gitstatus/gitstatus.prompt.zsh && source $HOMEBREW_
 # Hide git for dotfiles
 alias git-dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME'
 
+link_ssh_agent() {
+    auth_link="$HOME/.ssh/ssh-auth-sock"
+    if [ "$SSH_AUTH_SOCK" != "$auth_link" ]; then
+        ln -sf "$SSH_AUTH_SOCK" "$auth_link"
+        export SSH_AUTH_SOCK="$auth_link"
+    fi
+}
+
 # Setup our SSH agent - See https://github.com/gvengel/ssh-askpass
 connect_ssh_agent() {
-    auth_link="$HOME/.ssh/ssh-auth-sock"
-    export SSH_AUTH_SOCK="$auth_link"
     if ! ssh-add -l > /dev/null 2>&1; then
         echo "start new agent"
         killall -q ssh-agent
         eval `SSH_ASKPASS=/usr/local/bin/ssh-askpass DISPLAY=:0 ssh-agent -s -t 12h`
-        ln -sf "$SSH_AUTH_SOCK" "$auth_link"
-        export SSH_AUTH_SOCK="$auth_link"
+        link_ssh_agent
         ssh-add -c ~/.ssh/id_ed25519
     fi
 }
-[ -f ~/.ssh/id_ed25519 ] && connect_ssh_agent
+#[ -f ~/.ssh/id_ed25519 ] && connect_ssh_agent
 
 # Setup our GPG Agent
-# brew install gnupg
-# brew install pinentry-mac
+#   brew install gnupg
+#   brew install pinentry-mac
+# To prompt for a missing smartcard, with key inserted
+#   gpg --with-keygrip --card-status | awk '/keygrip/ {print $3; exit}' >> $HOME/.gnupg/sshcontrol
 connect_gpg_agent() {
     export GPG_TTY="$(tty)"
     export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+    link_ssh_agent
     gpgconf --launch gpg-agent
     gpg-connect-agent updatestartuptty /bye > /dev/null
 }
 
-# Auto reconnect tmux over SSH
-if [ "$SSH_CONNECTION" -a -z "$TMUX" ]; then
-    tmux attach -d
-fi
-
 test -e ~/.zshrc.local && source ~/.zshrc.local
 
+attach() {
+    if [ -z "$SSH_CONNECTION" ]; then
+        connect_gpg_agent
+    fi
+    link_ssh_agent
+    if [ -z "$TMUX" ]; then                                                                               
+        tmux attach -d
+        exit
+    fi
+}
+attach
