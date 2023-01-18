@@ -126,11 +126,12 @@ test -e ~/.zshrc.local && source ~/.zshrc.local
 attach() {
     if [ -z "$SSH_CONNECTION" ]; then
         connect_gpg_agent
+    else
+        if [ -z "$TMUX" ]; then                                                                               
+            tmux attach -d
+            exit
+        fi
     fi
     link_ssh_agent
-    if [ -z "$TMUX" ]; then                                                                               
-        tmux attach -d
-        exit
-    fi
 }
 attach
