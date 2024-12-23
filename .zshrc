@@ -129,7 +129,7 @@ attach() {
         connect_gpg_agent
     else
         if [ -z "$TMUX" ]; then                                                                               
-            tmux attach -d
+            tmux -u -CC attach -d
             exit
         fi
     fi
